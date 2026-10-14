@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+
+
+
+<title>MaskBridge | Seeing the Action: Bridging the Action–Video Gap with Embodiment Masks for Embodied World Models</title>
+<meta content="MaskBridge bridges the action–video gap with pixel-aligned embodiment masks for robotic world models, policy evaluation, and closed-loop control." name="description"/>
+<meta content="index,follow" name="robots"/>
+<meta content="MaskBridge | Seeing the Action: Bridging the Action–Video Gap with Embodiment Masks for Embodied World Models" property="og:title"/>
+<meta content="MaskBridge bridges the action–video gap with pixel-aligned embodiment masks for robotic world models, policy evaluation, and closed-loop control." property="og:description"/>
+<meta content="https://maskbridge.github.io/static/images/teaser.png" property="og:image"/>
+<meta content="https://maskbridge.github.io/" property="og:url"/>
+<meta content="website" property="og:type"/>
+<link href="./static/images/logo.png" rel="icon"/>
+<link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&amp;family=Montserrat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="./static/css/bulma.min.css" rel="stylesheet"/>
+
+
+
+
+<link href="./static/css/index.css" rel="stylesheet"/>
+
+
+<link href="./static/css/video-pager.css" rel="stylesheet"/>
+
+
+
+
+
+
+
+
+
+
+<style>
+    .no-sort {
+        cursor: default;
+        pointer-events: none;
+        background-image: none !important; /* Remove the sort arrow */
+    }
+
+    .title-ecflow {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2em;
+      font-weight: 700;
+      background: linear-gradient(45deg, #2196F3, #4CAF50);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: 2px;
+      margin-bottom: 0.5em;
+      position: relative;
+      display: inline-block;
+      text-align: center;
+      padding-bottom: 0.2em;
+    }
+
+    .title-ecflow::after {
+      content: '';
+      position: absolute;
+      bottom: -22px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(45deg, #2196F3, #4CAF50);
+      border-radius: 2px;
+    }
+
+    .title-ecflow img {
+      width: 1.5em;
+      filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    }
+  </style>
+<script defer="" src="./static/js/site.js"></script><script defer="" src="./static/js/video-pager.js"></script><link href="./static/css/maskbridge.css" rel="stylesheet"/><link href="https://maskbridge.github.io/" rel="canonical"/></head>
+<body>
+<nav aria-label="main navigation" class="navbar" role="navigation">
+<div class="navbar-brand">
+<button aria-controls="research-menu" aria-expanded="false" aria-label="menu" class="navbar-burger" role="button" type="button">
+<span aria-hidden="true"></span>
+<span aria-hidden="true"></span>
+<span aria-hidden="true"></span>
+</button>
+</div>
+<div class="navbar-menu" id="research-menu">
+<div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+<div class="navbar-item has-dropdown is-hoverable">
+<p style="font-size:18px; display: inline; margin-right: -2px; margin-top: 12px;">🏠</p>
+<a class="navbar-link">
+          More Research
+        </a>
+<div class="navbar-dropdown">
+<a class="navbar-item" href="https://ec-flow1.github.io/">
+<b>EC-Flow</b>
+</a>
+<a class="navbar-item" href="https://bridgevla.github.io/">
+<b>BridgeVLA</b>
+</a>
+<a class="navbar-item" href="https://verm-ral.github.io/">
+<b>VERM</b>
+</a>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<section class="hero">
+<div class="hero-body">
+<div class="container is-max-desktop">
+<div class="columns is-centered">
+<div class="column has-text-centered">
+<h1 class="title is-1 publication-title is-bold" style="">
+<img alt="MaskBridge project illustration" src="static/images/logo.png" style="height:1.5em;width:auto;"/>
+<span class="maskbridge" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5)">MaskBridge</span>
+</h1>
+<h2 class="subtitle is-3 publication-subtitle">Seeing the Action: Bridging the Action–Video Gap with Embodiment Masks for Embodied World Models</h2>
+
+<div class="is-size-5 publication-authors"><span class="author-block"><a href="https://yixiang-chen.cn/" rel="noopener noreferrer" target="_blank">Yixiang Chen</a><sup>1,2</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?user=b8z2YcYAAAAJ&amp;hl=en&amp;oi=sra" rel="noopener noreferrer" target="_blank">Peiyan Li</a><sup>1,2</sup></span>, <span class="author-block"><a href="https://jiabingyang.cn/" rel="noopener noreferrer" target="_blank">Jiabing Yang</a><sup>1,2</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?user=RHPI-NQAAAAJ&amp;hl=zh-CN&amp;oi=ao" rel="noopener noreferrer" target="_blank">Keji He</a><sup>3</sup></span>, <span class="author-block"><a href="https://xiangnan-wu.github.io/" rel="noopener noreferrer" target="_blank">Xiangnan Wu</a><sup>1,2</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?hl=en&amp;user=vzUBE0oAAAAJ" rel="noopener noreferrer" target="_blank">Yuan Xu</a><sup>1,2</sup></span>, <span class="author-block">Kai Wang<sup>1,2</sup></span>, <span class="author-block">Qisen Ma<sup>1,2</sup></span>, <span class="author-block"><a href="https://orcid.org/0009-0008-1933-1471" rel="noopener noreferrer" target="_blank">Jing Liu</a><sup>4</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?hl=en&amp;user=I-NXbwIAAAAJ" rel="noopener noreferrer" target="_blank">Nianfeng Liu</a><sup>4</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?user=6nUJrQ0AAAAJ&amp;hl=zh-CN" rel="noopener noreferrer" target="_blank">Yan Huang</a><sup>1,2,4,†</sup></span>, <span class="author-block"><a href="https://scholar.google.com/citations?hl=zh-CN&amp;user=8kzzUboAAAAJ" rel="noopener noreferrer" target="_blank">Liang Wang</a><sup>1,2,†</sup></span></div>
+<div class="is-size-5 publication-authors" style=" margin: 10px auto;">
+<span class="author-block"><sup>†</sup> Corresponding authors</span>
+</div>
+<div class="is-size-5 publication-authors">
+<span class="author-block"><sup>1</sup><a href="http://cripac.ia.ac.cn/en/EN/volumn/home.shtml" rel="noopener noreferrer" style="color: black;" target="_blank">CASIA-NLPR</a>,</span>
+<span class="author-block"><sup>2</sup><a href="https://english.ucas.ac.cn/" rel="noopener noreferrer" style="color: black;" target="_blank">UCAS</a>,</span>
+<span class="author-block"><sup>3</sup><a href="https://www.ai.sdu.edu.cn/index.htm" rel="noopener noreferrer" style="color: black;" target="_blank">Shandong University</a>,</span>
+<span class="author-block"><sup>4</sup>FiveAges</span>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section" style="padding-top: 1rem; padding-bottom: 1rem;">
+<div class="container">
+<div class="columns is-centered">
+<div class="column is-four-fifths">
+<div class="tldr-box" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                                    border-left: 5px solid #4a90e2;
+                                    padding: 20px;
+                                    border-radius: 8px;
+                                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+<h2 class="title is-4" style="color: #2c3e50; margin-bottom: 10px;">TL;DR:</h2>
+<p class="is-size-5" style="color: #34495e; line-height: 1.6;">MaskBridge turns actions into pixel-aligned embodiment masks, connecting pretrained video generators to robotic world models across viewpoints and embodiments. The same mask interface also enables learning from uncalibrated, action-free videos.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+
+
+<section class="section">
+<div class="container" style="margin-bottom: 2vh;">
+
+<div class="columns is-centered has-text-centered">
+<div class="column is-four-fifths">
+<h2 class="title is-3">Abstract</h2>
+<div class="content has-text-justified">
+<p>Embodied world models, which predict future visual observations conditioned on actions, extend video generation from passive synthesis to interactive prediction of physical dynamics. A central obstacle is that the actions of an embodied agent live in a low-dimensional coordinate space, whereas pretrained video generation models operate in pixel space. This single mismatch weakens action conditioning, makes models sensitive to camera viewpoints, forces embodiment-specific architectures, and ties training to calibrated, action-annotated robot data. We present MaskBridge, which resolves this mismatch at the representation level: coordinate-space actions are converted into pixel-aligned embodiment masks rendered from the robot URDF and camera parameters, and injected into a pretrained video generation model via a ControlNet-style pathway. Because the conditioning lies in pixel space, it aligns actions with predicted videos, accommodates diverse camera viewpoints, and unifies the architecture across embodiments. Moreover, since the conditioning masks can equally be extracted from raw videos by off-the-shelf segmentation, training requires neither camera calibration nor action annotations, allowing MaskBridge to exploit large-scale egocentric human videos. To mitigate overfitting to static backgrounds, MaskBridge further introduces a flow-based motion loss that concentrates learning on dynamic, task-relevant regions. On single-arm (DROID) and dual-arm (AgiBot-G1) datasets with unseen viewpoints and scenes, MaskBridge outperforms state-of-the-art embodied world models. On downstream real-world tasks, it further serves as a reliable proxy for policy evaluation and as a predictive critic whose closed-loop control achieves higher success rates than the vision-language-action (VLA) policies alone.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+<div class="container">
+<div class="columns is-centered">
+<div class="column is-four-fifths">
+<div class="content has-text-justified">
+<div class="box" style="margin-top: 0; margin-bottom: 1rem;">
+<div class="content has-text-centered">
+<img alt="MaskBridge uses pixel-aligned embodiment masks to bridge the action–video gap across viewpoints and robot embodiments." decoding="async" loading="lazy" src="static/images/teaser.png" style="width: 100%; height: auto;" width="100%"/>
+<p class="has-text-left">
+<strong>Figure 1: </strong>MaskBridge vs. previous methods.
+                Pixel-aligned embodiment masks bridge video generation models to embodied world models,
+                addressing the action–video gap, improving viewpoint robustness, and yielding a unified architecture across embodiments.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="hero is-light is-small">
+<div class="hero-body has-text-centered">
+<h1 class="title is-1 mathvista_other">
+<span class="mathvista_other" style="vertical-align: middle">Method</span>
+</h1>
+</div>
+</section>
+<section class="section">
+<div class="container">
+<div class="columns is-centered">
+<div class="column is-four-fifths">
+<div class="content has-text-justified">
+<p>
+            MaskBridge is an action-conditioned embodied world model that predicts future videos from an initial image and an action sequence.
+            The core idea is to bridge actions into the visual domain by converting them into pixel-aligned embodiment masks and injecting them into a pretrained video diffusion model.
+          </p>
+<h4 class="title is-5 mt-5 mb-3">Action-to-Mask Conditioning</h4>
+<p>
+            The action-to-mask conditioning module converts coordinate-space actions into pixel-aligned embodiment masks rendered from the URDF and camera parameters.
+          </p>
+<ul style="margin-left: 1.5em;">
+<li>
+<b>From Actions to Pixel-Space Masks:</b>
+              MaskBridge converts actions into temporally aligned embodiment masks in pixel space by simulating embodiment motion (e.g., via URDF) and projecting it onto the image plane. These masks explicitly indicate where the embodiment is expected to move at each timestep.
+              </li>
+<li>
+<b>Mask-Conditioned Video Diffusion:</b>
+                  The mask sequence is injected into a pretrained image-to-video diffusion model through a ControlNet-style conditioning branch, guiding generation while preserving pretrained visual and motion priors. This design also supports settings without action annotations, where masks can be obtained directly from video segmentation.
+              </li>
+</ul>
+<h4 class="title is-5 mt-5 mb-3">Motion-Centric Training Objectives</h4>
+<p>
+            Standard diffusion losses supervise frames independently and may overlook temporal structure.
+            To improve spatiotemporal consistency, MaskBridge combines two motion-aware objectives:
+          </p>
+<ul style="margin-left: 1.5em;">
+<li>
+<b>Latent dynamics consistency,</b>
+              which explicitly aligns temporal differences between predicted and ground-truth video latents across multiple time offsets,
+              encouraging coherent long-horizon dynamics.
+              </li>
+<li>
+<b>Optical flow supervision,</b>
+              which compares motion fields between predicted and ground-truth videos using a frozen flow estimator,
+              focusing learning on embodiment and object motion rather than static backgrounds.
+              </li>
+</ul>
+<div class="box" style="margin-top: 2rem; margin-bottom: 2rem;">
+<div class="content has-text-centered">
+<img alt="MaskBridge architecture: action-to-mask rendering, VAE encoding, ControlNet conditioning, video diffusion, and flow supervision." decoding="async" loading="lazy" src="static/images/network.png" style="width: 100%; height: auto;" width="100%"/>
+<p class="has-text-left">
+<strong>Figure 2: </strong>Overview of the MaskBridge pipeline.
+                Actions are projected into pixel-space masks using URDF and camera parameters.
+                The initial image and mask sequence are encoded by VAE, with mask features injected via a ControlNet branch into the DiT backbone.
+                The model generates action-consistent videos, trained with diffusion, dynamics-consistency, and flow-based objectives.
+              </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="hero is-light is-small">
+<div class="hero-body has-text-centered">
+<h1 class="title is-1 mathvista_other">Video Generation Capabilities</h1>
+</div>
+</section>
+<section class="section">
+<div class="container">
+<div class="columns is-centered">
+<div class="column is-four-fifths">
+<div class="content">
+<h2 class="title is-3 has-text-centered">DROID</h2>
+<div aria-label="DROID video examples" class="video-pager" data-video-pager="" role="region">
+<button aria-label="Previous" class="vp-btn vp-prev" type="button">
+<svg viewbox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<div class="vp-viewport">
+<div class="vp-track">
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/0.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/1.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/2.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/3.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/4.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/5.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/6.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/7.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/8.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/droid/9.mp4" type="video/mp4"/>
+</video>
+</section>
+</div>
+</div>
+<button aria-label="Next" class="vp-btn vp-next" type="button">
+<svg viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div aria-label="Pagination" class="vp-dots" data-vp-dots=""></div>
+</div>
+<h2 class="title is-3 has-text-centered">AgiBot-G1</h2>
+<div aria-label="AgiBot-G1 video examples" class="video-pager" data-video-pager="" role="region">
+<button aria-label="Previous" class="vp-btn vp-prev" type="button">
+<svg viewbox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<div class="vp-viewport">
+<div class="vp-track">
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/0.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/1.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/2.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/3.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/4.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/5.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/6.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/7.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/8.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/g1/9.mp4" type="video/mp4"/>
+</video>
+</section>
+</div>
+</div>
+<button aria-label="Next" class="vp-btn vp-next" type="button">
+<svg viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div aria-label="Pagination" class="vp-dots" data-vp-dots=""></div>
+</div>
+<h2 class="title is-3 has-text-centered">Real-World</h2>
+<div aria-label="Real-world video examples" class="video-pager" data-video-pager="" role="region">
+<button aria-label="Previous" class="vp-btn vp-prev" type="button">
+<svg viewbox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+</button>
+<div class="vp-viewport">
+<div class="vp-track">
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/0.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/1.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/2.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/3.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/4.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/5.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/6.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/7.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/8.mp4" type="video/mp4"/>
+</video>
+</section>
+<section class="vp-page">
+<video class="vp-video" controls="" muted="" playsinline="" preload="metadata">
+<source src="static/videos/real/9.mp4" type="video/mp4"/>
+</video>
+</section>
+</div>
+</div>
+<button aria-label="Next" class="vp-btn vp-next" type="button">
+<svg viewbox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+</button>
+
+<div aria-label="Pagination" class="vp-dots" data-vp-dots=""></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="hero is-light is-small">
+<div class="hero-body has-text-centered">
+<h1 class="title is-1 mathvista_other">Downstream Applications</h1>
+</div>
+</section>
+<section class="section" id="applications"><div class="container is-max-desktop"><div class="applications-grid">
+<article class="box application-card policy-card"><h3 class="title is-4 has-text-centered">Policy Evaluation</h3><p>MaskBridge predicts policy outcomes without real-world execution. Pooled success rates correlate with real-world outcomes at Pearson <em>r</em> = 0.84.</p><div class="policy-figures">
+<figure><img alt="MaskBridge success rates versus real-world success rates for OpenVLA-OFT, π₀, and SpatialVLA; Pearson r = 0.84." loading="lazy" src="static/images/realworld_eval.png"/><figcaption><strong>Figure 3.</strong> Correlation between MaskBridge policy evaluation and real-world success.</figcaption></figure>
+<figure><img alt="MaskBridge policy evaluation: average MMRV 0.050 and per-task macro-average Pearson r 0.891, compared with IRASim and EVAC." loading="lazy" src="static/images/policy_eval.png"/><figcaption><strong>Table 1.</strong> Per-task policy evaluation and comparison with other world models. The averaged per-task correlation is distinct from the pooled correlation.</figcaption></figure>
+</div></article>
+<article class="box application-card"><h3 class="title is-4 has-text-centered">Goal-Conditioned Planning</h3><p>MaskBridge scores candidate outcomes against a goal image. Video prediction remains consistent across translation-dominated and rotation-heavy tasks; refining the action search improves success on close drawer from 30% to 50%, and on flip cup from 0% to 30%.</p><figure><img alt="MaskBridge generation quality for put on plate, put in shelf, close drawer, and flip cup, including PSNR, SSIM, LPIPS, FVD, and Mask-IoU." loading="lazy" src="static/images/planning.png"/><figcaption><strong>Table 2.</strong> Generation quality across the four planning tasks.</figcaption></figure></article>
+<article class="box application-card"><h3 class="title is-4 has-text-centered">World-Model-Enhanced Closed-Loop Control</h3><p>VLA policies propose candidate actions and MaskBridge scores their predicted outcomes. Overall success improves from 42.5% to 55% for OpenVLA-OFT, and from 80% to 85% for π₀.</p><figure><img alt="Real-world success rates with MaskBridge: OpenVLA-OFT improves from 42.5% to 55%, and π₀ improves from 80% to 85%." loading="lazy" src="static/images/closed_loop.png"/><figcaption><strong>Table 3.</strong> Real-world success rates when MaskBridge is integrated into VLA control pipelines.</figcaption></figure></article>
+</div></div></section>
+
+
+
+
+<footer class="footer">
+
+<div class="content has-text-centered">
+</div>
+<div class="columns is-centered">
+<div class="column is-8">
+<div class="content has-text-centered">
+<div class="content">
+<p>
+              This website is adapted from <a href="https://nerfies.github.io/">Nerfies</a>, licensed under a <a href="http://creativecommons.org/licenses/by-sa/4.0/" rel="license">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+</div>
+</div>
+</div>
+</div>
+
+</footer>
+</body>
+</html>
