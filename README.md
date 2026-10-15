@@ -6,13 +6,15 @@ Seeing the Action: Bridging the Action–Video Gap with Embodiment Masks for Emb
 
 Live website: https://maskbridge.github.io/
 
+Code: https://github.com/maskbridge/MaskBridge
+
 ## Local preview
 
 Run `python3 -m http.server 8000` from this directory and open http://localhost:8000. No build step is required.
 
 ## Assets
 
-Figures and results follow the current manuscript and supplementary material. The page intentionally omits paper, arXiv, and code links.
+Figures and results follow the current manuscript and supplementary material. The page links to the code repository; paper and arXiv links are not yet included.
 
 ## Attribution
 
